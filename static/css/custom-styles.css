@@ -1,0 +1,271 @@
+/*----------------------------------------------
+    COMMON  STYLES
+------------------------------------------------*/
+
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    position: relative;
+    margin: 0;
+    padding-bottom: 0;
+    background-color: #fff;
+}
+
+html {
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    color: #3c4146;
+}
+
+
+#page-index {
+    width: 100%;
+    display: block;
+    overflow: auto;
+    position: relative;
+    top: 56px;
+}
+
+#page-index a {
+    text-decoration: none;
+    outline: 0;
+}
+
+
+.text-center {
+    text-align: center;
+}
+
+.plain-element {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.col .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.hide {
+  display: none;
+}
+
+
+
+/*----------------------------------------------
+    SEARCHBOX
+------------------------------------------------*/
+
+.col-brand {
+  line-height: 100px;
+  height: 100px;
+  padding-left: 0px !important;
+}
+
+.img-banner {
+  border-radius: 4px;
+  height: 100%;
+  max-width: 100%;
+  margin-right: 0.5%;
+  box-shadow: 1px 1px 1px 0px #c7c7c7;
+  border: 1px solid #c7c7c7;
+  cursor: pointer;
+}
+
+
+
+.col-searchbox {
+    line-height: 100px;
+    height: 100px;
+}
+
+.row-search {
+    margin: 50px 0px;
+}
+
+.row-search h4 {
+    font-size: 42px;
+    color: #5f6368;
+    margin-bottom: 30px;
+
+}
+
+.searchbox-wrapper {
+    position: relative;
+    width: 80%;
+    margin: auto;
+}
+
+.searchbox-wrapper-long {
+    position: relative;
+    width: 100%;
+
+}
+
+
+.btn-transparent {
+    position: absolute;
+    top: -2px;
+    right: 20px;
+    font-size: 28px;
+    height:100%;
+    color: #4267b2;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.btn-transparent:hover,
+.btn-transparent:active,
+.btn-transparent:focus {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+
+#searchbox {
+    box-shadow: 0 1px rgba(188,188,183,0.30);
+    border: 1px solid rgba(188,188,183,0.50);
+    border-radius: 8px;
+    width: 97.5%;
+    margin: auto;
+    padding: 4px 8px;
+    font-size: 18px;
+    background: #fff;
+}
+
+
+
+.row-error {
+  margin: 10px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.row-error p {
+  margin: 0px;
+}
+
+.error {
+   color: red !important;
+}
+
+.resultCount {
+    color: #0054a0 !important;
+    font-size: 18px;
+    margin-left: 2px;
+    float: left;
+}
+
+/*------------------------------------------------------------------------------
+    DASHBOARD CARDS
+------------------------------------------------------------------------------*/
+
+
+.dashboard-cards {
+    border: none;
+    text-align: center;
+    box-shadow: none;
+    width: 72%;
+    margin: auto;
+    padding-bottom: 80px;
+    min-height: 700px;
+    display: block;
+    overflow: auto;
+}
+
+
+
+/*------------------------------------------------------------------------------
+    FOOTER
+------------------------------------------------------------------------------*/
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding-left: 9.5%;
+    padding-right: 10.5%;
+    text-align: center;
+    background-color: transparent;
+}
+
+.footer-right p{
+    float: right !important;
+}
+
+.footer-left p{
+    float: left !important;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 12px;
+    color: #868e96;
+    padding: 15px 0px;
+    text-align: center;
+}
+
+.footer a {
+    color: #868e96;
+}
+
+.footer a:hover,
+.footer a:focus,
+.footer a:active {
+    color: #4f84ae;
+    text-decoration: none;
+}
+
+@media(max-width:1700px) {
+
+
+    .footer {
+      padding-left: 0.5%;
+      padding-right: 0.5%;
+    }
+
+
+
+}
+
+
+
+@media(max-width:1361px) {
+
+
+
+
+}
+
+@media(max-width:1200px) {
+
+
+
+
+}
+
+
+@media(max-width:1025px) {
+
+
+
+
+}
+
+@media(max-width:800px) {
+
+
+}
+
+@media(max-width:600px) {
+
+
+
+
+}
+
+
+
