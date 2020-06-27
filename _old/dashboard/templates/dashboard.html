@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% load staticfiles %}
+
+
+{% block content %}
+
+<div id="page-index">
+  <div class="dashboard-cards">
+    <div class="row row-search">
+      <h4> Properties (Avg. {{avg}} )</h4>
+    </div>
+
+
+
+    <div class="row">
+      <table >
+        <tr>
+          <th>Location</th>
+          <th>Property Type</th>
+          <th>Price</th>
+          <th>Sold</th>
+        </tr>
+
+
+        {% for xxx in properties %}
+
+
+        <tr>
+          <td class="center">{{ xxx.location }}</td>
+          <td class="center">{{ xxx.property_type}}</td>
+          <td class="center">{{xxx.price }}</td>
+          <td class="center">{{xxx.sold }}</td>
+        </tr>
+
+      {% endfor %}
+
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
