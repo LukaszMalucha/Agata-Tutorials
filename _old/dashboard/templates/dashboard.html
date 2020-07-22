@@ -10,9 +10,8 @@
     </div>
 
 
-
     <div class="row">
-      <table >
+      <table>
         <tr>
           <th>Location</th>
           <th>Property Type</th>
@@ -25,16 +24,38 @@
 
 
         <tr>
-          <td class="center">{{ xxx.location }}</td>
+          <td class="center">{{ xxx.area }}</td>
           <td class="center">{{ xxx.property_type}}</td>
           <td class="center">{{xxx.price }}</td>
           <td class="center">{{xxx.sold }}</td>
         </tr>
 
-      {% endfor %}
+        {% endfor %}
 
       </table>
     </div>
+    <br><br><br>
+    <div class="row">
+      <div class="col s4">
+         <form action="{% url 'dashboard' %}" method="POST">
+           {% csrf_token %}
+          <label >Area:</label><br>
+          <input type="text" name="area" value="" required ><br>
+
+          <label >Property Type:</label><br>
+          <input type="text"  name="property_type" value="" required ><br><br>
+
+          <label >Price:</label><br>
+          <input type="number"  min="0"   name="price" value="" required ><br><br>
+
+
+          <input type="submit" value="Submit">
+        </form>
+
+      </div>
+
+    </div>
+
 
   </div>
 </div>
