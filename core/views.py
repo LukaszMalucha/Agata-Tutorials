@@ -1,13 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, View
 from django.shortcuts import redirect
-from .models import Item, OrderItem, Order
+from .models import Item, OrderItem, Order, BillingAddress
 from django.utils import timezone
 from django.http import JsonResponse
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from core.forms import CheckoutForm
 
 class HomeView(ListView):
     model = Item
@@ -33,9 +34,44 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-@login_required
-def checkout(request):
-    return render(request, "checkout.html")
+
+class CheckoutView(View):
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        context = {
+            'form' : form
+        }
+        return render(self.request, "checkout.html", context)
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = form.cleaned_data.get('street_address')
+                apartment_address = form.cleaned_data.get('apartment_address')
+                country = form.cleaned_data.get('country')
+                zip = form.cleaned_data.get('zip')
+                # same_billing_address = form.cleaned_data.get('same_billing_address')
+                # save_info = form.cleaned_data.get('save_info')
+                payment_option = form.cleaned_data.get('payment_option')
+                billing_address = BillingAddress(
+                    user=self.request.user,
+                    street_address=street_address,
+                    apartment_address=apartment_address,
+                    country=country,
+                    zip=zip
+                )
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                return redirect('core:checkout')
+        except ObjectDoesNotExist:
+            messages.error(request, "You do not have and active order")
+            return redirect("core:order-summary")
+
+
+
 
 @login_required
 def add_to_cart(request, slug):
