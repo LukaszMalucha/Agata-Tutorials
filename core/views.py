@@ -11,9 +11,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from core.forms import CheckoutForm
 import stripe
 import env
-
+import os
 
 stripe.api_key = os.environ.get("STRIPE_API_KEY")
+
 
 class HomeView(ListView):
     model = Item
@@ -39,12 +40,11 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-
 class CheckoutView(View):
     def get(self, *args, **kwargs):
         form = CheckoutForm()
         context = {
-            'form' : form
+            'form': form
         }
         return render(self.request, "checkout.html", context)
 
@@ -76,8 +76,6 @@ class CheckoutView(View):
             return redirect("core:order-summary")
 
 
-
-
 @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
@@ -88,22 +86,23 @@ def add_to_cart(request, slug):
     )
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
-       order = order_qs[0]
-       if order.items.filter(item__slug=item.slug).exists():
-           order_item.quantity += 1
-           order_item.save()
-           messages.info(request, "This item quantity was updated.")
-           return redirect("core:order-summary")
-       else:
-           order.items.add(order_item)
-           messages.info(request, "This item was added to your cart.")
-           return redirect("core:order-summary")
+        order = order_qs[0]
+        if order.items.filter(item__slug=item.slug).exists():
+            order_item.quantity += 1
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("core:order-summary")
+        else:
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return redirect("core:order-summary")
     else:
         ordered_date = timezone.now()
-        order = Order.objects.create(user=request.user, ordered_date = ordered_date)
+        order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("core:order-summary")
+
 
 @login_required
 def remove_from_cart(request, slug):
@@ -159,33 +158,18 @@ def remove_single_item_from_cart(request, slug):
         return redirect("core:product", slug=slug)
 
 
-
 class PaymentView(View):
     def get(self, *args, **kwargs):
         return render(self.request, "payment.html")
 
     def post(self, *args, **kwargs):
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        token = self.request.POST.get('stripeToken')
         stripe.Charge.create(
-            amount=2000,
+            amount=order.get_total() * 100,
             currency="usd",
-            source="tok_mastercard",
-            description="My First Test Charge (created for API docs)",
+            source=token,
         )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        order.ordered = True
 
