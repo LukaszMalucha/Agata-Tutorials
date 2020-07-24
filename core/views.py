@@ -9,6 +9,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.forms import CheckoutForm
+import stripe
+import env
+
+
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 class HomeView(ListView):
     model = Item
@@ -152,3 +157,35 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.info(request, "You do not have an active order")
         return redirect("core:product", slug=slug)
+
+
+
+class PaymentView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, "payment.html")
+
+    def post(self, *args, **kwargs):
+        stripe.Charge.create(
+            amount=2000,
+            currency="usd",
+            source="tok_mastercard",
+            description="My First Test Charge (created for API docs)",
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
