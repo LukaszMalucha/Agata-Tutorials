@@ -18,7 +18,7 @@ stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 class HomeView(ListView):
     model = Item
-    paginate_by = 1
+    paginate_by = 10
     template_name = "home.html"
 
 
@@ -70,7 +70,15 @@ class CheckoutView(View):
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
-                return redirect('core:checkout')
+
+                if payment_option == "S":
+                    return redirect('core:payment', payment_option='stripe')
+                elif payment_option == "P":
+                    return redirect('core:payment', payment_option="paypal")
+                else:
+                    messages.warning(self.request, "Invalid payment option selected")
+                    return redirect('core:checkout')
+
         except ObjectDoesNotExist:
             messages.error(request, "You do not have and active order")
             return redirect("core:order-summary")
@@ -160,16 +168,65 @@ def remove_single_item_from_cart(request, slug):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
-        return render(self.request, "payment.html")
+
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        context = {
+            'order': order
+        }
+        return render(self.request, "payment.html", context)
 
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
         token = self.request.POST.get('stripeToken')
-        stripe.Charge.create(
-            amount=order.get_total() * 100,
-            currency="usd",
-            source=token,
-        )
+        amount = int(order.get_total() * 100)
 
-        order.ordered = True
+        try:
+            charge = stripe.Charge.create(
+                amount=amount,
+                currency="usd",
+                source=token,
+            )
+
+            payment = Payment()
+            payment.stripe_charge_id = charge['id']
+            payment.user = self.request.user
+            payment.amount = order.get_total()
+            payment.save()
+
+            order.ordered = True
+            order.payment = payment
+            order.save()
+
+            messages.success(self.request, "Your order was successful!")
+            return redirect("/")
+
+        except stripe.error.CardError as e:
+            body = e.json_body
+            err = body.get('error', {})
+            messages.error(self.request, f"{err.get('message')}")
+            return redirect("/")
+
+        except stripe.error.RateLimitError as e:
+            messages.error(self.request, "Rate limit error.")
+            return redirect("/")
+
+        except stripe.error.InvalidRequestError as e:
+            messages.error(self.request, "Invalid request error.")
+            return redirect("/")
+
+        except stripe.error.AuthenticationError as e:
+            messages.error(self.request, "Authentication error.")
+            return redirect("/")
+
+        except stripe.error.APIConnectionError as e:
+            messages.error(self.request, "API connection error.")
+            return redirect("/")
+
+        except stripe.error.StripeError as e:
+            messages.error(self.request, "Stripe error. You were not charged.")
+            return redirect("/")
+
+        except Exception as e:
+            messages.error(self.request, "Application error occured.")
+            return redirect("/")
 
